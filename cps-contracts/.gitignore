@@ -1,0 +1,18 @@
+# Compiler files
+cache/
+out/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+.env.local
+.DS_Store
+
+# 依赖 (如果你的项目只使用 forge，通常直接安装)
+lib/
+node_modules/
+
+# Ignores development broadcast logs
+/broadcast
