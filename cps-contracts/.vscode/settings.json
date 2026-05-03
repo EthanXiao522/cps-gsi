@@ -1,0 +1,10 @@
+{
+  "[solidity]": {
+    // "editor.defaultFormatter": "NomicFoundation.hardhat-solidity",
+    "editor.defaultFormatter": "tintinweb.solidity-visual-auditor",
+    "editor.formatOnSave": true
+  },
+  "solidity.formatter": "forge",
+  "solidity.packageDefaultDependenciesContractsDirectory": "src",
+  "solidity.packageDefaultDependenciesDirectory": "lib"
+}

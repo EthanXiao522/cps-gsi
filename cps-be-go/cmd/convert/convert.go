@@ -34,7 +34,7 @@ func main() {
 		os.Exit(2)
 	}
 	contractName := os.Args[1]
-	data, err := os.ReadFile("../../cps-contracts/out/" + contractName + ".sol/" + contractName + ".json")
+	data, err := os.ReadFile("../../../cps-contracts/out/" + contractName + ".sol/" + contractName + ".json")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "failed to read artifact:", err)
 		os.Exit(1)
@@ -63,9 +63,9 @@ func main() {
 		fmt.Fprintln(os.Stderr, "failed to marshal combined json:", err)
 		os.Exit(1)
 	}
-	if err := os.WriteFile("../contracts/"+contractName+"-combined.json", output, 0644); err != nil {
+	if err := os.WriteFile("../../contracts/"+contractName+"-combined.json", output, 0644); err != nil {
 		fmt.Fprintln(os.Stderr, "failed to write output file:", err)
 		os.Exit(1)
 	}
-	fmt.Println("wrote sucess!! path: ../contracts/" + contractName + "-combined.json")
+	fmt.Println("wrote sucess!! path: ../../contracts/" + contractName + "-combined.json")
 }

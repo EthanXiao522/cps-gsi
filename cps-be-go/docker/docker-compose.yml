@@ -1,0 +1,75 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: cps_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    # 🔧 选择一种方式配置密码
+
+    # 方式1：无密码（开发环境）
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+    # 方式2：有密码（生产环境）
+    # command: redis-server --requirepass "your_secure_password"
+
+    # 方式3：使用配置文件
+    # volumes:
+    #   - ./redis.conf:/usr/local/etc/redis/redis.conf
+    # command: redis-server /usr/local/etc/redis/redis.conf
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - app_network
+
+  # 可选：Redis Commander (Redis 管理界面: 浏览器 http://localhost:8081)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: cps_redis_commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - app_network
+
+  #mysql
+  mysql:
+    image: mysql:8.0
+    container_name: cps_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: web3-contract
+      MYSQL_USER: cps_user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-cps_pass}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - app_network
+
+volumes:
+  redis_data:
+    driver: local
+  mysql_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

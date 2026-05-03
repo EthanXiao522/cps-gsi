@@ -1,0 +1,34 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+         {
+            "name": "Launch transactionerc", // 配置的名称，显示在调试下拉菜单中
+            "type": "go",            // 指定使用 Go 调试器
+            "request": "launch",     // “launch” 表示启动一个新程序
+            "mode": "auto",          // 自动选择调试模式
+            // "program": "${workspaceFolder}/cps-be-go", // 要调试的程序入口，指向当前工作区根目录
+            "program": "${workspaceFolder}/cps-be-go/cmd/transactionerc/transactionerc.go", // 要调试的程序入口
+            "console": "integratedTerminal"  // 在 VS Code 的集成终端中显示程序输出
+            ,"args": [
+                "-toAddress", "0xF2e34a538e34ec233d2DD8E9faE216f878EB8458",
+                "-amount", "1000000000000000000"
+            ]
+        }, 
+        {
+            "name": "Launch transactionbnb", // 配置的名称，显示在调试下拉菜单中
+            "type": "go",            // 指定使用 Go 调试器
+            "request": "launch",     // “launch” 表示启动一个新程序
+            "mode": "auto",          // 自动选择调试模式
+            "program": "${workspaceFolder}/cps-be-go/cmd/transactionbnb/transactionbnb.go", // 要调试的程序入口
+            "console": "integratedTerminal"  // 在 VS Code 的集成终端中显示程序输出
+            ,"args": [
+                "-toAddress", "0xF2e34a538e34ec233d2DD8E9faE216f878EB8458",
+                // "-amount", "1000000000000000000"
+                "-amount", "10000000000000000"
+            ]
+        }
+    ]
+}
