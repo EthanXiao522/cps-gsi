@@ -29,7 +29,7 @@ func main() {
 	fmt.Printf("stakeAmount: %d, stakePeriod: %d, stakeIndex: %d\n", *stakeAmountFlag, *stakePeriodFlag, *stakeIndexFlag)
 
 	//校验参数
-	if *stakeAmountFlag <= 0 || (*stakePeriodFlag < 0 && *stakePeriodFlag > 3) {
+	if *stakeAmountFlag <= 0 || (*stakePeriodFlag > 3) {
 		panic("Invalid input parameters. Please provide valid stakeAmount(>0) and stakePeriod([0-3]).")
 	}
 
