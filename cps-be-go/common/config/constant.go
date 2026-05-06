@@ -27,5 +27,5 @@ const (
 // 事件名称
 const (
 	StakedEventName    = "Staked"
-	WithdrawnEventName = "Withdrawn"
+	WithdrawnEventName = "Withdraw"
 )

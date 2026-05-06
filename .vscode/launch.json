@@ -26,8 +26,32 @@
             "console": "integratedTerminal"  // 在 VS Code 的集成终端中显示程序输出
             ,"args": [
                 "-toAddress", "0xF2e34a538e34ec233d2DD8E9faE216f878EB8458",
-                // "-amount", "1000000000000000000"
                 "-amount", "10000000000000000"
+            ]
+        }, 
+        {
+            "name": "Launch main", // 配置的名称，显示在调试下拉菜单中
+            "type": "go",            // 指定使用 Go 调试器
+            "request": "launch",     // “launch” 表示启动一个新程序
+            "mode": "auto",          // 自动选择调试模式
+            "program": "${workspaceFolder}/cps-be-go/main.go", // 要调试的程序入口
+            "console": "integratedTerminal"  // 在 VS Code 的集成终端中显示程序输出
+            ,"args": [
+                "-toAddress", "0xF2e34a538e34ec233d2DD8E9faE216f878EB8458",
+                "-amount", "1000000000000000000"
+            ]
+        }, 
+        {
+            "name": "Launch mtkstake", // 配置的名称，显示在调试下拉菜单中
+            "type": "go",            // 指定使用 Go 调试器
+            "request": "launch",     // “launch” 表示启动一个新程序
+            "mode": "auto",          // 自动选择调试模式
+            "program": "${workspaceFolder}/cps-be-go/cmd/stake/mtkstake.go", // 要调试的程序入口
+            "console": "integratedTerminal"  // 在 VS Code 的集成终端中显示程序输出
+            ,"args": [
+                "-stakeAmount", "1000000000000000000",
+                "-stakePeriod", "1",
+                "-stakeIndex","8"
             ]
         }
     ]

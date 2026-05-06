@@ -161,3 +161,23 @@ func checkTxStatus(client *ethclient.Client, txHash common.Hash) (*types.Receipt
 		}
 	}
 }
+
+// approve
+func (s *TransactionService) ApproveMTKStake(amount *big.Int) (*types.Transaction, error) {
+	// 1. 获取授权合约实例
+	contractAddr := common.HexToAddress(config.Get().BlockchainConfig.Contracts.Token)
+	mtkContract, err := mtk.NewMtk(contractAddr, s.clientInfo.Client)
+	if err != nil {
+		fmt.Printf("contract create failed: %v\n", err)
+		return nil, err
+	}
+	// 2. 调用approve方法授权质押合约可以使用amount数量的MTK
+	stakeContractAddr := common.HexToAddress(config.Get().BlockchainConfig.Contracts.Stake)
+	tx, err := mtkContract.Approve(s.clientInfo.Auth, stakeContractAddr, amount)
+	if tx == nil || err != nil {
+		fmt.Printf("approve failed: %v\n", err)
+		return nil, err
+	}
+	fmt.Printf("Approve transaction sent. Tx hash: %s\n", tx.Hash().Hex())
+	return tx, err
+}
