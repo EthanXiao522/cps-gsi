@@ -38,13 +38,13 @@ func StartStakeEventListener() {
 	conf := config.Get()
 	clientInfo, err := adapter.NewSyncEthClient()
 	if err != nil {
-		log.Fatal("ListenToStakeEvent: Failed to connect to the BSC network: %v", err)
+		log.Printf("ListenToStakeEvent: Failed to connect to the BSC network: %v", err)
 	}
 	defer clientInfo.CloseEthClient()
 
 	contractABI, err := abi.JSON(strings.NewReader(stake.MTKStakeMetaData.ABI))
 	if err != nil {
-		log.Fatal("ListenToStakeEvent: Failed to parse contract ABI: %v", err)
+		log.Printf("ListenToStakeEvent: Failed to parse contract ABI: %v", err)
 	}
 
 	// 获取Stake事件ID
@@ -53,9 +53,10 @@ func StartStakeEventListener() {
 	log.Printf("Listening for events with stakeEventId:%s , withdrawEventId:%s", stakeEventID, withdrawEventID)
 
 	client := clientInfo.Client
+	//BlockNumber returns the most recent block number
 	startBlock, err := client.BlockNumber(context.Background())
 	if err != nil {
-		log.Fatal("ListenToStakeEvent: Failed to get block number: %v", err)
+		log.Printf("ListenToStakeEvent: Failed to get block number: %v", err)
 	}
 	log.Printf("Starting to listen for events from block number: %d", startBlock)
 
@@ -65,10 +66,13 @@ func StartStakeEventListener() {
 	// 循环监听事件
 	for isRunning {
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer func() {
+			cancel() //确保每次循环结束时取消上下文，避免资源泄漏
+			fmt.Println("一次循环结束")
+		}()
 		currentBlock, err := client.BlockNumber(ctx)
 		if err != nil {
 			log.Printf("ListenToStakeEvent: Failed to get block number, will retry after 10 seconds: %v", err)
-			cancel()
 			time.Sleep(10 * time.Second)
 			continue
 		}
@@ -79,6 +83,7 @@ func StartStakeEventListener() {
 
 		if endBlock > startBlock {
 			log.Printf("Scanning blocks: %d to %d", startBlock, endBlock)
+			// 构建过滤器查询事件,扫块获取事件日志
 			logs, err := client.FilterLogs(ctx, ethereum.FilterQuery{
 				FromBlock: big.NewInt(int64(startBlock)),
 				ToBlock:   big.NewInt(int64(endBlock)),
@@ -87,11 +92,10 @@ func StartStakeEventListener() {
 			})
 			if err != nil {
 				log.Printf("ListenToStakeEvent: Failed to filter logs, will retry after 10 seconds: %v", err)
-				cancel()
 				time.Sleep(10 * time.Second)
 				continue
 			}
-
+			// 解析事件日志,根据事件ID区分事件类型,并处理事件数据
 			for _, vLog := range logs {
 				handleLog(vLog, dto.StakeEventListener{
 					StakedEventId:    stakeEventID,
@@ -102,9 +106,7 @@ func StartStakeEventListener() {
 			}
 
 			startBlock = endBlock + 1
-			cancel()
 		} else {
-			cancel()
 			time.Sleep(10 * time.Second) //如果没有新块，等待一段时间再继续监听
 		}
 	}
